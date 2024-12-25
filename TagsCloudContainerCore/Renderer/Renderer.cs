@@ -33,7 +33,6 @@ public class Renderer : IRenderer
         foreach (var tag in tagList)
         {
             ValidateRectangle(tag.Rectangle);
-            var skRect = new SKRect(tag.Rectangle.Left, tag.Rectangle.Top, tag.Rectangle.Right, tag.Rectangle.Bottom);
             _paint.Color = new SKColor(tag.Color.ToUint());
             _font.Size = tag.FontSize;
 
@@ -41,7 +40,6 @@ public class Renderer : IRenderer
             var y = tag.Rectangle.Bottom - _font.Metrics.Descent;
 
             canvas.DrawText(tag.Text, x, y, _font, _paint);
-            canvas.DrawRect(skRect, _paint);
         }
 
         _logger.LogInformation("Finished drawing tags");

@@ -3,8 +3,7 @@ using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
 using TagsCloudContainerCore.Renderer;
-using TagsCloudContainerCore.WordProcessor;
-using TagsCloudContainerCore.WordsRanker;
+using TagsCloudContainerCore.TextProcessor;
 
 namespace TagsCloudContainerCore;
 
@@ -15,11 +14,8 @@ public static class CoreStartUp
         builder.RegisterType<FileDataProvider>()
             .As<IDataProvider>();
 
-        builder.RegisterType<HunspellWordProcessor>()
+        builder.RegisterType<MyStemWordProcessor>()
             .As<IWordProcessor>();
-
-        builder.RegisterType<WordsRanker.WordsRanker>()
-            .As<IWordsRanker>();
 
         builder.RegisterType<CircularClouldLayouterFactory>()
             .As<ILayouterFactory>();
