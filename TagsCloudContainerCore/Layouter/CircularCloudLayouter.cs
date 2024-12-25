@@ -7,15 +7,7 @@ public class CircularCloudLayouter : ILayouter
     private const double Step = 0.1;
     private readonly List<Rectangle> _rectangles = new();
     private double _angle;
-    private Point _center;
     
-
-    public void SetCenter(Point center)
-    {
-        _rectangles.Clear();
-        _center = center;
-        _angle = 0;
-    }
 
     public Rectangle PutNextRectangle(Size rectangleSize)
     {
@@ -46,8 +38,8 @@ public class CircularCloudLayouter : ILayouter
     private Point GetNextPosition()
     {
         var radius = Step * _angle;
-        var x = (float)(_center.X + radius * Math.Cos(_angle));
-        var y = (float)(_center.Y + radius * Math.Sin(_angle));
+        var x = (float)(radius * Math.Cos(_angle));
+        var y = (float)(radius * Math.Sin(_angle));
 
         _angle += Step;
 

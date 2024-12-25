@@ -34,7 +34,7 @@ public class Renderer : IRenderer
         {
             ValidateRectangle(tag.Rectangle);
             var skRect = new SKRect(tag.Rectangle.Left, tag.Rectangle.Top, tag.Rectangle.Right, tag.Rectangle.Bottom);
-            _paint.Color = tag.Color;
+            _paint.Color = new SKColor(tag.Color.ToUint());
             _font.Size = tag.FontSize;
 
             var x = tag.Rectangle.Left;

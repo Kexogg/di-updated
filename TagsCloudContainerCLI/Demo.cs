@@ -9,12 +9,12 @@ namespace TagsCloudContainerCLI;
 public class Demo
 {
     private readonly IImageEncoder _encoder;
-    private readonly ILayouter _layouter;
+    private readonly ILayouterFactory _layouterFactory;
     private readonly IRenderer _renderer;
 
-    public Demo(IImageEncoder encoder, ILayouter layouter, IRenderer renderer)
+    public Demo(IImageEncoder encoder, ILayouterFactory layouterFactory, IRenderer renderer)
     {
-        _layouter = layouter;
+        _layouterFactory = layouterFactory;
         _renderer = renderer;
         _encoder = encoder;
     }
@@ -30,9 +30,9 @@ public class Demo
 
     private Tag[] GenerateRandomCloud(int count)
     {
+        var layouter = _layouterFactory.Create();
         var tags = new Tag[count];
 
-        _layouter.SetCenter(new Point(500, 500));
 
         for (var i = 0; i < count; i++)
         {
@@ -46,9 +46,9 @@ public class Demo
             {
                 Text = text,
                 FontSize = fontSize,
-                Color = new SKColor((byte)new Random().Next(0, 255), (byte)new Random().Next(0, 255),
+                Color = new Color((byte)new Random().Next(0, 255), (byte)new Random().Next(0, 255),
                     (byte)new Random().Next(0, 255)),
-                Rectangle = _layouter.PutNextRectangle(new Size(textWidth, fontSize))
+                Rectangle = layouter.PutNextRectangle(new Size(textWidth, fontSize))
             };
             tags[i] = tag;
         }
