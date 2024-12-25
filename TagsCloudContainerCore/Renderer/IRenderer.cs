@@ -5,7 +5,5 @@ namespace TagsCloudContainerCore.Renderer;
 
 public interface IRenderer
 {
-    void DrawTags(IEnumerable<Tag> tags, SKSize size);
-
-    SKImage GetImage();
+    SKImage DrawTags(IEnumerable<Tag> tags);
 }

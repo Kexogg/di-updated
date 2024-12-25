@@ -9,7 +9,6 @@ public class Renderer : IRenderer
     private readonly SKFont _font;
     private readonly ILogger<IRenderer> _logger;
     private readonly SKPaint _paint;
-    private SKBitmap _bitmap;
 
     public Renderer(ILogger<IRenderer> logger)
     {
@@ -22,13 +21,16 @@ public class Renderer : IRenderer
         };
     }
 
-    public void DrawTags(IEnumerable<Tag> tags, SKSize size)
+    public SKImage DrawTags(IEnumerable<Tag> tags)
     {
-        _bitmap = new SKBitmap((int)size.Width, (int)size.Height);
-        using var canvas = new SKCanvas(_bitmap);
+        var tagList = tags.ToList();
+        var size = CalculateImageSize(tagList);
+        var bitmap = new SKBitmap((int)size.Width, (int)size.Height);
+        using var canvas = new SKCanvas(bitmap);
         canvas.Clear(SKColors.LightGray);
-        _logger.LogInformation("Drawing {0} tags", tags.Count());
-        foreach (var tag in tags)
+        canvas.Translate(-size.Left, -size.Top);
+        _logger.LogInformation("Drawing {t} tags", tagList.Count);
+        foreach (var tag in tagList)
         {
             ValidateRectangle(tag.Rectangle);
             _paint.Color = tag.Color;
@@ -42,21 +44,28 @@ public class Renderer : IRenderer
         }
 
         _logger.LogInformation("Finished drawing tags");
+        return SKImage.FromBitmap(bitmap);
     }
 
-    public SKImage GetImage()
+    private SKRect CalculateImageSize(IEnumerable<Tag> tags)
     {
-        return SKImage.FromBitmap(_bitmap);
+        var endY = 0;
+        var endX = 0;
+        var startX = int.MaxValue;
+        var startY = int.MaxValue;
+        foreach (var tag in tags)
+        {
+            endX = Math.Max(endX, (int)tag.Rectangle.Right);
+            endY = Math.Max(endY, (int)tag.Rectangle.Bottom);
+            startX = Math.Min(startX, (int)tag.Rectangle.Left);
+            startY = Math.Min(startY, (int)tag.Rectangle.Top);
+        }
+        return new SKRect(startX, startY, endX, endY);
     }
 
     private void ValidateRectangle(SKRect rectangle)
     {
-        if (rectangle.Left < 0 || rectangle.Top < 0 || rectangle.Right > _bitmap.Width ||
-            rectangle.Bottom > _bitmap.Height)
-            //throw new ArgumentException("Rectangle is out of bounds");
-            _logger.LogWarning("Rectangle is out of bounds");
         if (rectangle.Left >= rectangle.Right || rectangle.Top >= rectangle.Bottom)
-            //throw new ArgumentException("Rectangle is invalid");
             _logger.LogWarning("Rectangle is invalid");
     }
 }

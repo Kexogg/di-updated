@@ -12,14 +12,12 @@ public class Demo
     private readonly IImageEncoder _encoder;
     private readonly ICircularCloudLayouter _layouter;
     private readonly IRenderer _renderer;
-    private readonly ILifetimeScope _scope;
 
-    public Demo(ILifetimeScope scope)
+    public Demo(IImageEncoder encoder, ICircularCloudLayouter layouter, IRenderer renderer)
     {
-        _scope = scope;
-        _layouter = _scope.Resolve<ICircularCloudLayouter>();
-        _renderer = _scope.Resolve<IRenderer>();
-        _encoder = _scope.Resolve<IImageEncoder>();
+        _layouter = layouter;
+        _renderer = renderer;
+        _encoder = encoder;
     }
 
     public void GenerateDemo()
@@ -61,9 +59,9 @@ public class Demo
 
     private void RenderCloud(Tag[] tags, string path)
     {
-        _renderer.DrawTags(tags, new SKSize(1000, 1000));
-        var image = _encoder.Encode(_renderer.GetImage());
+        var image = _renderer.DrawTags(tags);
+        var encodedImage = _encoder.Encode(image);
         using var stream = File.OpenWrite(path);
-        image.SaveTo(stream);
+        encodedImage.SaveTo(stream);
     }
 }
