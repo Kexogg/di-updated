@@ -5,14 +5,10 @@ namespace TagsCloudContainerCore.Layouter;
 public class CircularCloudLayouter : ICircularCloudLayouter
 {
     private const double Step = 0.1;
-    private readonly List<SKRect> _rectangles;
+    private readonly List<SKRect> _rectangles = new List<SKRect>();
     private double _angle;
     private SKPoint _center;
-
-    public CircularCloudLayouter()
-    {
-        _rectangles = new List<SKRect>();
-    }
+    
 
     public void SetCenter(SKPoint center)
     {
@@ -45,10 +41,7 @@ public class CircularCloudLayouter : ICircularCloudLayouter
         return rectangle;
     }
 
-    public SKRect[] GetRectangles()
-    {
-        return _rectangles.ToArray();
-    }
+    public IReadOnlyList<SKRect> Rectangles => _rectangles.AsReadOnly();
 
     private SKPoint GetNextPosition()
     {

@@ -14,10 +14,10 @@ public class WordsRanker : IWordsRanker
         _logger = logger;
     }
 
-    public Dictionary<string, int> GetWordsRank(string[] words)
+    public Dictionary<string, double> GetWordsRank(string[] words)
     {
         _logger.LogInformation("Ranking {words} words", words.Length);
-        var rank = new Dictionary<string, int>();
+        var rank = new Dictionary<string, double>();
         foreach (var word in words)
         {
             var processedWord = _processor.ProcessWord(word);

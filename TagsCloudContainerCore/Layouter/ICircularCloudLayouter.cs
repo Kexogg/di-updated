@@ -6,5 +6,5 @@ public interface ICircularCloudLayouter
 {
     SKRect PutNextRectangle(SKSize rectangleSize);
     void SetCenter(SKPoint center);
-    SKRect[] GetRectangles();
+    public IReadOnlyList<SKRect> Rectangles { get; }
 }

@@ -2,5 +2,5 @@ namespace TagsCloudContainerCore.WordsRanker;
 
 public interface IWordsRanker
 {
-    public Dictionary<string, int> GetWordsRank(string[] words);
+    public Dictionary<string, double> GetWordsRank(string[] words);
 }
