@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using TagsCloudContainerCore.Models;
+using TagsCloudContainerCore.Models.Graphics;
 
 namespace TagsCloudContainerCore.Renderer;
 
@@ -32,12 +33,12 @@ public class Renderer : IRenderer
         _logger.LogInformation("Drawing {t} tags", tagList.Count);
         foreach (var tag in tagList)
         {
-            ValidateRectangle(tag.Rectangle);
+            ValidateRectangle(tag.BBox);
             _paint.Color = new SKColor(tag.Color.ToUint());
             _font.Size = tag.FontSize;
 
-            var x = tag.Rectangle.Left;
-            var y = tag.Rectangle.Bottom - _font.Metrics.Descent;
+            var x = tag.BBox.Left;
+            var y = tag.BBox.Bottom - _font.Metrics.Descent;
 
             canvas.DrawText(tag.Text, x, y, _font, _paint);
         }
@@ -54,10 +55,10 @@ public class Renderer : IRenderer
         var startY = int.MaxValue;
         foreach (var tag in tags)
         {
-            endX = Math.Max(endX, (int)tag.Rectangle.Right);
-            endY = Math.Max(endY, (int)tag.Rectangle.Bottom);
-            startX = Math.Min(startX, (int)tag.Rectangle.Left);
-            startY = Math.Min(startY, (int)tag.Rectangle.Top);
+            endX = Math.Max(endX, (int)tag.BBox.Right);
+            endY = Math.Max(endY, (int)tag.BBox.Bottom);
+            startX = Math.Min(startX, (int)tag.BBox.Left);
+            startY = Math.Min(startY, (int)tag.BBox.Top);
         }
         return new Rectangle(startX, startY, endX, endY);
     }

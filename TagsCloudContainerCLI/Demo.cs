@@ -1,7 +1,7 @@
-using SkiaSharp;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
 using TagsCloudContainerCore.Models;
+using TagsCloudContainerCore.Models.Graphics;
 using TagsCloudContainerCore.Renderer;
 
 namespace TagsCloudContainerCLI;
@@ -37,7 +37,7 @@ public class Demo
         for (var i = 0; i < count; i++)
         {
             var fontSize = new Random().Next(10, 50);
-            var font = SKTypeface.Default.ToFont();
+            var font = new Font();
             font.Size = fontSize;
             var text = $"Tag{i}";
             var textWidth = font.MeasureText(text);
@@ -48,7 +48,7 @@ public class Demo
                 FontSize = fontSize,
                 Color = new Color((byte)new Random().Next(0, 255), (byte)new Random().Next(0, 255),
                     (byte)new Random().Next(0, 255)),
-                Rectangle = layouter.PutNextRectangle(new Size(textWidth, fontSize))
+                BBox = layouter.PutNextRectangle(new Size(textWidth, fontSize))
             };
             tags[i] = tag;
         }

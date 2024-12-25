@@ -1,4 +1,4 @@
-namespace TagsCloudContainerCore.Models;
+namespace TagsCloudContainerCore.Models.Graphics;
 
 public class Size(float width, float height)
 {

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using Moq;
 using TagsCloudContainerCore.Models;
 using TagsCloudContainerCore.TextProcessor;
 
@@ -5,7 +7,13 @@ namespace TagsCloudTests;
 
 public class MyStemWordProcessorTests
 {
-    private readonly MyStemWordProcessor _myStemWordProcessor = new();
+    private readonly MyStemWordProcessor _myStemWordProcessor;
+    
+    public MyStemWordProcessorTests()
+    {
+        var mockLogger = new Mock<ILogger<MyStemWordProcessor>>();
+        _myStemWordProcessor = new MyStemWordProcessor(mockLogger.Object);
+    }
 
     [Test]
     public void MyStemWordProcessor_ShouldProcessWord()

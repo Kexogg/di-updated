@@ -1,34 +1,33 @@
 using SkiaSharp;
 
-namespace TagsCloudContainerCore.Models;
+namespace TagsCloudContainerCore.Models.Graphics;
 
-public class Font
+public class Font : SKFont
 {
-    private readonly SKTypeface _typeface;
-    private readonly float _size;
-    private readonly float _scaleX;
-    private readonly float _skewX;
-
-    public Font(SKTypeface typeface, float size = 12, float scaleX = 1, float skewX = 0)
+    public Font() : base(SKTypeface.Default)
     {
-        _typeface = typeface;
-        _size = size;
-        _scaleX = scaleX;
-        _skewX = skewX;
     }
-
-    public Font()
+    
+    public Font(SKTypeface typeface, float size) : base(typeface, size)
     {
-        _typeface = SKTypeface.Default;
     }
-
-    public SKFont ToSKFont()
+    
+    public Font(SKTypeface typeface) : base(typeface)
     {
-        return new SKFont(_typeface, _size, _scaleX, _skewX);
+    } 
+    
+    public Font(SKFont font) : base(font.Typeface, font.Size)
+    {
+        Hinting = font.Hinting;
+        Edging = font.Edging;
+        Embolden = font.Embolden;
+        Subpixel = font.Subpixel;
+        LinearMetrics = font.LinearMetrics;
+        ScaleX = font.ScaleX;
+        SkewX = font.SkewX;
     }
-
-    public float Size => _size;
-    public float ScaleX => _scaleX;
-    public float SkewX => _skewX;
-    public SKTypeface Typeface => _typeface;
+    
+    public static Font Default => new Font(SKTypeface.Default.ToFont());
+    
+    public Font ToFont() => this;
 }
