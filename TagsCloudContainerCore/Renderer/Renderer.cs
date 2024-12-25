@@ -33,6 +33,7 @@ public class Renderer : IRenderer
         foreach (var tag in tagList)
         {
             ValidateRectangle(tag.Rectangle);
+            var skRect = new SKRect(tag.Rectangle.Left, tag.Rectangle.Top, tag.Rectangle.Right, tag.Rectangle.Bottom);
             _paint.Color = tag.Color;
             _font.Size = tag.FontSize;
 
@@ -40,14 +41,14 @@ public class Renderer : IRenderer
             var y = tag.Rectangle.Bottom - _font.Metrics.Descent;
 
             canvas.DrawText(tag.Text, x, y, _font, _paint);
-            canvas.DrawRect(tag.Rectangle, _paint);
+            canvas.DrawRect(skRect, _paint);
         }
 
         _logger.LogInformation("Finished drawing tags");
         return SKImage.FromBitmap(bitmap);
     }
 
-    private SKRect CalculateImageSize(IEnumerable<Tag> tags)
+    private static Rectangle CalculateImageSize(IEnumerable<Tag> tags)
     {
         var endY = 0;
         var endX = 0;
@@ -60,10 +61,10 @@ public class Renderer : IRenderer
             startX = Math.Min(startX, (int)tag.Rectangle.Left);
             startY = Math.Min(startY, (int)tag.Rectangle.Top);
         }
-        return new SKRect(startX, startY, endX, endY);
+        return new Rectangle(startX, startY, endX, endY);
     }
 
-    private void ValidateRectangle(SKRect rectangle)
+    private void ValidateRectangle(Rectangle rectangle)
     {
         if (rectangle.Left >= rectangle.Right || rectangle.Top >= rectangle.Bottom)
             _logger.LogWarning("Rectangle is invalid");

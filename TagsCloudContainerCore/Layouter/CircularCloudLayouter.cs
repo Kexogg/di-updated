@@ -1,36 +1,36 @@
-using SkiaSharp;
+using TagsCloudContainerCore.Models;
 
 namespace TagsCloudContainerCore.Layouter;
 
-public class CircularCloudLayouter : ICircularCloudLayouter
+public class CircularCloudLayouter : ILayouter
 {
     private const double Step = 0.1;
-    private readonly List<SKRect> _rectangles = new List<SKRect>();
+    private readonly List<Rectangle> _rectangles = new();
     private double _angle;
-    private SKPoint _center;
+    private Point _center;
     
 
-    public void SetCenter(SKPoint center)
+    public void SetCenter(Point center)
     {
         _rectangles.Clear();
         _center = center;
         _angle = 0;
     }
 
-    public SKRect PutNextRectangle(SKSize rectangleSize)
+    public Rectangle PutNextRectangle(Size rectangleSize)
     {
         if (rectangleSize.Width <= 0 || rectangleSize.Height <= 0)
             throw new ArgumentException("Rectangle size must be positive", nameof(rectangleSize));
 
-        SKRect rectangle;
+        Rectangle rectangle;
 
         do
         {
             var centerOfRectangle = GetNextPosition();
-            var rectanglePosition = new SKPoint(centerOfRectangle.X - rectangleSize.Width / 2,
+            var rectanglePosition = new Point(centerOfRectangle.X - rectangleSize.Width / 2,
                 centerOfRectangle.Y - rectangleSize.Height / 2);
 
-            rectangle = new SKRect(
+            rectangle = new Rectangle(
                 rectanglePosition.X,
                 rectanglePosition.Y,
                 rectanglePosition.X + rectangleSize.Width,
@@ -41,9 +41,9 @@ public class CircularCloudLayouter : ICircularCloudLayouter
         return rectangle;
     }
 
-    public IReadOnlyList<SKRect> Rectangles => _rectangles.AsReadOnly();
+    public IReadOnlyList<Rectangle> Rectangles => _rectangles.AsReadOnly();
 
-    private SKPoint GetNextPosition()
+    private Point GetNextPosition()
     {
         var radius = Step * _angle;
         var x = (float)(_center.X + radius * Math.Cos(_angle));
@@ -51,6 +51,6 @@ public class CircularCloudLayouter : ICircularCloudLayouter
 
         _angle += Step;
 
-        return new SKPoint(x, y);
+        return new Point(x, y);
     }
 }

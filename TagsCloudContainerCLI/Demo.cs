@@ -1,4 +1,3 @@
-using Autofac;
 using SkiaSharp;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
@@ -10,10 +9,10 @@ namespace TagsCloudContainerCLI;
 public class Demo
 {
     private readonly IImageEncoder _encoder;
-    private readonly ICircularCloudLayouter _layouter;
+    private readonly ILayouter _layouter;
     private readonly IRenderer _renderer;
 
-    public Demo(IImageEncoder encoder, ICircularCloudLayouter layouter, IRenderer renderer)
+    public Demo(IImageEncoder encoder, ILayouter layouter, IRenderer renderer)
     {
         _layouter = layouter;
         _renderer = renderer;
@@ -33,7 +32,7 @@ public class Demo
     {
         var tags = new Tag[count];
 
-        _layouter.SetCenter(new SKPoint(500, 500));
+        _layouter.SetCenter(new Point(500, 500));
 
         for (var i = 0; i < count; i++)
         {
@@ -49,7 +48,7 @@ public class Demo
                 FontSize = fontSize,
                 Color = new SKColor((byte)new Random().Next(0, 255), (byte)new Random().Next(0, 255),
                     (byte)new Random().Next(0, 255)),
-                Rectangle = _layouter.PutNextRectangle(new SKSize(textWidth, fontSize))
+                Rectangle = _layouter.PutNextRectangle(new Size(textWidth, fontSize))
             };
             tags[i] = tag;
         }

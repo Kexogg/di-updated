@@ -6,6 +6,6 @@ public class Tag
 {
     public SKColor Color;
     public int FontSize;
-    public SKRect Rectangle;
+    public Rectangle Rectangle;
     public required string Text;
 }

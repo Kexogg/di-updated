@@ -21,8 +21,8 @@ public static class CoreStartUp
         builder.RegisterType<WordsRanker.WordsRanker>()
             .As<IWordsRanker>();
 
-        builder.RegisterType<CircularCloudLayouter>()
-            .As<ICircularCloudLayouter>();
+        builder.RegisterType<Layouter.CircularCloudLayouter>()
+            .As<ILayouter>();
 
         builder.RegisterType<Renderer.Renderer>()
             .As<IRenderer>();
