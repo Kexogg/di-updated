@@ -61,7 +61,11 @@ public class FileMode
                 p.InitialRadius = _config.InitialRadius;
                 p.Font = new Font(_config.FontFamily);
             })
-            .UseRenderer<Renderer>(r => r.TagFont = new Font(_config.FontFamily))
+            .UseRenderer<Renderer>(r =>
+            {
+                r.TagFont = new Font(_config.FontFamily);
+                r.RenderingScale = _config.RenderScale;
+            })
             .GuessEncoder(Path.GetExtension(outputPath)));
 
         var imageBytes = tagCloud.FromFile(filePath);
