@@ -28,10 +28,22 @@ public class MyStemTextProcessor : ITextProcessor
 
     public Dictionary<string, double> ProcessText(string text)
     {
-        _logger.LogInformation("Start processing text");
-        _myStemWrapper.StartProcess();
+        _logger.LogInformation("Start processing text with MyStem");
         var words = text.Split();
         _logger.LogInformation("Got {n} words", words.Length);
+        
+        _myStemWrapper.StartProcess();
+        var weightedWords = GetWeightedWords(words);
+        _myStemWrapper.Dispose();
+
+        _logger.LogInformation("Finished processing text. Got {n} weighted words, excluded {e}", weightedWords.Count,
+            words.Distinct().Count() - weightedWords.Count);
+        
+        return ProcessWeightedWords(weightedWords);
+    }
+
+    private Dictionary<string, double> GetWeightedWords(string[] words)
+    {
         var weightedWords = new Dictionary<string, double>();
         foreach (var word in words)
         {
@@ -63,9 +75,11 @@ public class MyStemTextProcessor : ITextProcessor
             }
         }
 
-        _logger.LogInformation("Finished processing text. Got {n} weighted words, excluded {e}", weightedWords.Count,
-            words.Distinct().Count() - weightedWords.Count);
-        
+        return weightedWords;
+    }
+
+    private Dictionary<string, double> ProcessWeightedWords(Dictionary<string, double> weightedWords)
+    {
         weightedWords = weightedWords
             .OrderByDescending(pair => pair.Value)
             .Take(MaxWordsCount)
@@ -77,7 +91,6 @@ public class MyStemTextProcessor : ITextProcessor
             SortOrder.Random => weightedWords.OrderBy(_ => Guid.NewGuid()).ToDictionary(pair => pair.Key, pair => pair.Value),
             _ => weightedWords
         };
-        
         return weightedWords;
     }
 }

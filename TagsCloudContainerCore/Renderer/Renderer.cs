@@ -41,6 +41,14 @@ public class Renderer : IRenderer
     public SKImage DrawTags(IEnumerable<Tag> tags)
     {
         var tagList = tags.ToList();
+        
+        if (tagList.Count == 0)
+        {
+            _logger.LogInformation("No tags to draw");
+            return SKImage.Create(new SKImageInfo(1, 1));
+        }
+        
+        
         var size = CalculateImageSize(tagList);
         _logger.LogInformation("Rendering scale is {scale}", RenderingScale);
 

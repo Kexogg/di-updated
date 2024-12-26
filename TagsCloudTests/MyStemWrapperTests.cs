@@ -13,6 +13,11 @@ public class MyStemWrapperTests
         _myStemWrapper.StartProcess();
     }
     
+    [TearDown]
+    public void TearDown()
+    {
+        _myStemWrapper.Dispose();
+    }
     
     [Test]
     public void MyStemWrapper_ShouldProcessWord()
@@ -23,7 +28,7 @@ public class MyStemWrapperTests
     }
     
     [Test]
-    public void MyStemWrapper_ShouldProcessWordWithPunctuation()
+    public void MyStemWrapper_ShouldProcessWord_WithPunctuation()
     {
         var processedWord = _myStemWrapper.ProcessWord("слово,");
         processedWord.NormalForm.Should().Be("слово");
@@ -31,7 +36,7 @@ public class MyStemWrapperTests
     }
     
     [Test]
-    public void MyStemWrapper_ShouldProcessWordInDifferentForms()
+    public void MyStemWrapper_ShouldProcessWord_InDifferentForms()
     {
         var processedWord = _myStemWrapper.ProcessWord("слова");
         processedWord.NormalForm.Should().Be("слово");
@@ -39,7 +44,7 @@ public class MyStemWrapperTests
     }
     
     [Test]
-    public void MyStemWrapper_ShouldProcessWordWithDifferentPartOfSpeech()
+    public void MyStemWrapper_ShouldProcessWord_WithDifferentPartOfSpeech()
     {
         var processedWord = _myStemWrapper.ProcessWord("говорю");
         processedWord.NormalForm.Should().Be("говорить");

@@ -23,6 +23,8 @@ public class CircularCloudLayouter : ILayouter
 
     public Tag[] LayoutTags(Dictionary<string, double> words)
     {
+        if (words.Count == 0)
+            return [];
         var minWeight = words.Values.Min();
         var maxWeight = words.Values.Max();
         

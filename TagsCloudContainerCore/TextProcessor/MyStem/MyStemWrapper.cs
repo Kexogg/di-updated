@@ -31,10 +31,12 @@ public class MyStemWrapper : IDisposable
     }
     
 
+    //TODO: fix (TSystemError) (Broken pipe) util/stream/output.cpp:322: fflush failed Aborted.
     public MyStemProcessedWord? ProcessWord(string word)
     {
         _inputWriter.WriteLine(word);
-        _inputWriter.Flush();
+        //Possible fix?
+        //_inputWriter.Flush();
         var line = _outputReader.ReadLine();
         if (line == null)
         {
@@ -55,6 +57,7 @@ public class MyStemWrapper : IDisposable
     public void Dispose()
     {
         StopProcess();
+        GC.SuppressFinalize(this);
     }
 
 

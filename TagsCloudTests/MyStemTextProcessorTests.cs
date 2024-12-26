@@ -61,4 +61,20 @@ public class MyStemTextProcessorTests
         result.Should().Contain(pair => pair.Key == "который" && pair.Value == 1);
         result.Should().Contain(pair => pair.Key == "обрабатывать" && pair.Value == 1);
     }
+    
+    [Test]
+    public void MyStemWordProcessor_ShouldProcessEmptyString()
+    {
+        var result = _myStemTextProcessor.ProcessText("");
+
+        result.Should().BeEmpty();
+    }
+    
+    [Test]
+    public void MyStemWordProcessor_ShouldProcessInvalidString()
+    {
+        var result = _myStemTextProcessor.ProcessText("123");
+
+        result.Should().BeEmpty();
+    }
 }
