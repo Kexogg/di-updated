@@ -52,7 +52,10 @@ internal class Program
                         LayoutSpacing = options.LayoutSpacing,
                         InitialRadius = options.InitialRadius,
                         ExcludedWords = options.ExcludedWords.Split(","),
-                        ExcludedPartsOfSpeech = options.ExcludedPartsOfSpeech.Split(",")
+                        ExcludedPartsOfSpeech = options.ExcludedPartsOfSpeech.Split(","),
+                        SortOrder = options.SortOrder,
+                        ForegroundColor = options.ForegroundColor,
+                        BackgroundColor = options.BackgroundColor,
                     };
                 }).SingleInstance();
             })

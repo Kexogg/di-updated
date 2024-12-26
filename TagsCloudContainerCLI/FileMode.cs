@@ -52,6 +52,7 @@ public class FileMode
                     .Where(pos => pos.HasValue)
                     .Select(pos => pos!.Value)
                     .ToArray();
+                p.SortOrder = Enum.Parse<SortOrder>(_config.SortOrder, true);
             })
             .UseLayouter<CircularCloudLayouterFactory>(p =>
             {
@@ -65,6 +66,8 @@ public class FileMode
             {
                 r.TagFont = new Font(_config.FontFamily);
                 r.RenderingScale = _config.RenderScale;
+                r.BackgroundColor = new Color(_config.BackgroundColor);
+                r.TextColor = new Color(_config.ForegroundColor);
             })
             .GuessEncoder(Path.GetExtension(outputPath)));
 

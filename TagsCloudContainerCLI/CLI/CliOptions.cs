@@ -39,4 +39,13 @@ public class CliOptions
 
     [Option("excluded-parts", Required = false, Default = "PART,ADV,PR,CONJ,ANUM,APRO,SPRO,NUM", HelpText = "Parts of speech to exclude.")]
     public string ExcludedPartsOfSpeech { get; set; }
+    
+    [Option("sort", Required = false, Default = "Descending", HelpText = "Sort order.")]
+    public string SortOrder { get; set; }
+    
+    [Option("background", Required = false, Default = "#000000", HelpText = "Background color in HEX.")]
+    public string BackgroundColor { get; set; }
+    
+    [Option("foreground", Required = false, Default = "#FFFFFF", HelpText = "Foreground color in HEX.")]
+    public string ForegroundColor { get; set; }
 }

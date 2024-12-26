@@ -8,11 +8,21 @@ public class Color
     {
         _color = (0xff000000u | (uint)(r << 16) | (uint)(g << 8) | b);
     }
+
+    public Color(string hex)
+    {
+        if (hex.StartsWith("#"))
+        {
+            hex = hex[1..];
+        }
+        
+        _color = hex.Length switch
+        {
+            6 => 0xff000000u | (uint)Convert.ToInt32(hex, 16),
+            3 => (0xff000000u | (uint)Convert.ToInt32(new string(hex.SelectMany(c => new[] {c, c}).ToArray()), 16)),
+            _ => throw new ArgumentException("Hex color code should be 3 or 6 characters long.")
+        };
+    }
     
     public uint ToUint() => _color;
-    
-    public byte Red => (byte)((_color >> 16) & 0xff);
-    public byte Green => (byte)((_color >> 8) & 0xff);
-    public byte Blue => (byte)((_color) & 0xff);
-    
 }

@@ -11,4 +11,7 @@ public record TagCloudConfig
     public double InitialRadius { get; set; }
     public string[] ExcludedWords { get; set; }
     public string[] ExcludedPartsOfSpeech { get; set; }
+    public string SortOrder { get; set; }
+    public string BackgroundColor { get; set; }
+    public string ForegroundColor { get; set; }
 }
