@@ -30,7 +30,7 @@ public class MyStemWrapper : IDisposable
     }
     
 
-    public MyStemProcessedWord ProcessWord(string word)
+    public MyStemProcessedWord? ProcessWord(string word)
     {
         _inputWriter.WriteLine(word);
         _inputWriter.Flush();
@@ -58,7 +58,7 @@ public class MyStemWrapper : IDisposable
 
 
     //TODO: оптипизировать 
-    private static MyStemProcessedWord ParseResult(string raw)
+    private static MyStemProcessedWord? ParseResult(string raw)
     {
         // Пример парса: "сделал{сделать=V,сов,пе=прош,ед,изъяв,муж}"
         // Пример ошибки: ъ{ъ??}
@@ -66,12 +66,16 @@ public class MyStemWrapper : IDisposable
         var endIndex = raw.IndexOf('}');
         var metadata = raw.Substring(startIndex, endIndex - startIndex).Split(',');
 
-        if (metadata.Length == 0 || !metadata[0].Contains('='))
+        if (metadata.Length == 0 || !metadata[0].Contains('=') || metadata[0].Contains('{'))
         {
-            return new MyStemProcessedWord(raw[..(startIndex - 1)], PartOfSpeech.S);
+            return null;
         }
 
         var rootForm = metadata[0].Split('=')[0];
+        if (rootForm.Contains('?'))
+        {
+            rootForm = rootForm.Remove(rootForm.IndexOf('?'));
+        }
         var partOfSpeech = metadata[0].Split('=')[1];
 
         if (Enum.TryParse(partOfSpeech, out PartOfSpeech pos))

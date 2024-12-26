@@ -1,15 +1,19 @@
-using TagsCloudContainerCore.Models;
 using TagsCloudContainerCore.Models.Graphics;
 
 namespace TagsCloudContainerCore.Layouter;
 
 public class CircularCloudLayouter : ILayouter
 {
-    private const double Step = 0.1;
+    private readonly double _step;
     private readonly List<Rectangle> _rectangles = new();
     private double _angle;
     
 
+    public CircularCloudLayouter(double step)
+    {
+        _step = step;
+    }
+    
     public Rectangle PutNextRectangle(Size rectangleSize)
     {
         if (rectangleSize.Width <= 0 || rectangleSize.Height <= 0)
@@ -33,16 +37,17 @@ public class CircularCloudLayouter : ILayouter
         _rectangles.Add(rectangle);
         return rectangle;
     }
+    
 
     public IReadOnlyList<Rectangle> Rectangles => _rectangles.AsReadOnly();
 
     private Point GetNextPosition()
     {
-        var radius = Step * _angle;
+        var radius = _step * _angle;
         var x = (float)(radius * Math.Cos(_angle));
         var y = (float)(radius * Math.Sin(_angle));
 
-        _angle += Step;
+        _angle += _step;
 
         return new Point(x, y);
     }

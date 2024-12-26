@@ -1,13 +1,23 @@
 using Microsoft.Extensions.Logging;
+using TagsCloudContainerCore.Models;
 using TagsCloudContainerCore.TextProcessor.MyStem;
 
 namespace TagsCloudContainerCore.TextProcessor;
 
-public class MyStemWordProcessor : IWordProcessor
+public class MyStemTextProcessor : IWordProcessor
 {
-    private ILogger<MyStemWordProcessor> _logger;
+    private ILogger<MyStemTextProcessor> _logger;
 
-    public MyStemWordProcessor(ILogger<MyStemWordProcessor> logger)
+    public PartOfSpeech[] ExcludedPartsOfSpeech { get; set; } =
+        [PartOfSpeech.PART, PartOfSpeech.ADV, PartOfSpeech.PR, PartOfSpeech.CONJ];
+
+    public string[] ExcludedWords { get; set; } = [];
+    
+    public SortOrder SortOrder { get; set; } = SortOrder.Descending;
+    
+    public int MaxWordsCount { get; set; } = 50;
+
+    public MyStemTextProcessor(ILogger<MyStemTextProcessor> logger)
     {
         _logger = logger;
         _myStemWrapper = new MyStemWrapper();
@@ -16,7 +26,7 @@ public class MyStemWordProcessor : IWordProcessor
     private readonly MyStemWrapper _myStemWrapper;
 
 
-    public Dictionary<string, double> ProcessText(string text, WordProcessorOptions options)
+    public Dictionary<string, double> ProcessText(string text)
     {
         _logger.LogInformation("Start processing text");
         _myStemWrapper.StartProcess();
@@ -33,13 +43,16 @@ public class MyStemWordProcessor : IWordProcessor
                 {
                     wordChars[i] = ' ';
                 }
+
                 wordChars[i] = char.ToLower(wordChars[i]);
             }
+
             var wordWithoutSpecialChars = new string(wordChars);
             if (string.IsNullOrWhiteSpace(wordWithoutSpecialChars)) continue;
             var processedWord = _myStemWrapper.ProcessWord(wordWithoutSpecialChars);
-            if (options.ExcludedPartsOfSpeech.Contains(processedWord.PartOfSpeech) ||
-                options.ExcludedWords.Contains(processedWord.NormalForm)) continue;
+            if (processedWord == null) continue;
+            if (ExcludedPartsOfSpeech.Contains(processedWord.PartOfSpeech) ||
+                ExcludedWords.Contains(processedWord.NormalForm)) continue;
             if (!weightedWords.TryGetValue(processedWord.NormalForm, out var value))
             {
                 weightedWords.Add(processedWord.NormalForm, 1);
@@ -52,6 +65,26 @@ public class MyStemWordProcessor : IWordProcessor
 
         _logger.LogInformation("Finished processing text. Got {n} weighted words, excluded {e}", weightedWords.Count,
             words.Distinct().Count() - weightedWords.Count);
+        
+        weightedWords = weightedWords
+            .OrderByDescending(pair => pair.Value)
+            .Take(MaxWordsCount)
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
+        weightedWords = SortOrder switch
+        {
+            SortOrder.Ascending => weightedWords.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value),
+            SortOrder.Descending => weightedWords,
+            SortOrder.Random => weightedWords.OrderBy(_ => Guid.NewGuid()).ToDictionary(pair => pair.Key, pair => pair.Value),
+            _ => weightedWords
+        };
+        
         return weightedWords;
     }
+}
+
+public enum SortOrder
+{
+    Ascending,
+    Descending,
+    Random
 }

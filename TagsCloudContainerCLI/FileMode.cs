@@ -26,8 +26,8 @@ public class FileMode
 
         var tagCloud = _cloudFactory.Create(builder => builder
             .UseDataProvider<OpenXmlProvider>()
-            .UseLayouter<CircularClouldLayouterFactory>()
-            .UseWordProcessor<MyStemWordProcessor>()
+            .UseLayouter<CircularCloudLayouterFactory>()
+            .UseWordProcessor<MyStemTextProcessor>()
             .UseRenderer<Renderer>()
             .UseImageEncoder<PngEncoder>());
 

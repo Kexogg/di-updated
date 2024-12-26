@@ -19,18 +19,39 @@ public class TagCloudModule : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<TagCloud>().As<ITagCloud>().InstancePerLifetimeScope();
-        
-        builder.RegisterType(_options.DataProviderType).As<IDataProvider>().SingleInstance();
-        builder.RegisterType(_options.WordProcessorType).As<IWordProcessor>().SingleInstance();
-        builder.RegisterType(_options.LayouterType).As<ILayouterFactory>().SingleInstance();
-        builder.RegisterType(_options.RendererType).As<IRenderer>().SingleInstance();
-        builder.RegisterType(_options.ImageEncoderType).As<IImageEncoder>().SingleInstance();
-        
+        builder.RegisterType<TagCloud>().AsSelf().As<ITagCloud>().InstancePerLifetimeScope();
+    
+        builder.RegisterType(_options.DataProviderType)
+            .AsImplementedInterfaces()
+            .SingleInstance()
+            .OnActivated(e => _options.ConfigureInstance(e.Instance));
+
+        builder.RegisterType(_options.WordProcessorType)
+            .AsImplementedInterfaces() 
+            .SingleInstance()
+            .OnActivated(e => _options.ConfigureInstance(e.Instance));
+
+        builder.RegisterType(_options.LayouterType)
+            .AsImplementedInterfaces()
+            .SingleInstance()
+            .OnActivated(e => _options.ConfigureInstance(e.Instance));
+
+        builder.RegisterType(_options.RendererType)
+            .AsImplementedInterfaces()
+            .SingleInstance()
+            .OnActivated(e => _options.ConfigureInstance(e.Instance));
+
+        builder.RegisterType(_options.ImageEncoderType)
+            .AsImplementedInterfaces()
+            .SingleInstance()
+            .OnActivated(e => _options.ConfigureInstance(e.Instance));
 
         foreach (var (serviceType, implementationType) in _options.ServiceMap)
         {
-            builder.RegisterType(implementationType).As(serviceType);
+            builder.RegisterType(implementationType)
+                .As(serviceType)
+                .SingleInstance()
+                .OnActivated(e => _options.ConfigureInstance(e.Instance));
         }
     }
 }

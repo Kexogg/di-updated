@@ -2,6 +2,6 @@ namespace TagsCloudContainerCore.TextProcessor;
 
 public interface IWordProcessor
 {
-    Dictionary<string, double> ProcessText(string word, WordProcessorOptions options);
+    Dictionary<string, double> ProcessText(string word);
 }
 

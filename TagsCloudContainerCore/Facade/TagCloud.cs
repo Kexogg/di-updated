@@ -51,7 +51,7 @@ public class TagCloud : ITagCloud
     private byte[] ProcessString(string data)
     {
         var layouter = _layouterFactory.Create();
-        var processedWords = _wordProcessor.ProcessText(data, new WordProcessorOptions([], []));
+        var processedWords = _wordProcessor.ProcessText(data);
         var tags = processedWords.Select(word => new Tag
         {
             Text = word.Key,
