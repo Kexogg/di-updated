@@ -46,7 +46,7 @@ public class Demo
 
         var imageBytes = tagCloud.FromString(GenerateRandomString(count));
 
-        File.WriteAllBytes($"results/random_cloud_{count}", imageBytes);
+        File.WriteAllBytes($"results/random_cloud_{count}.png", imageBytes);
     }
 
     private static string GenerateRandomString(int count)
