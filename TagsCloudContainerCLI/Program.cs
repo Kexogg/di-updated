@@ -8,6 +8,7 @@ using Serilog;
 using Serilog.Extensions.Autofac.DependencyInjection;
 using TagsCloudContainerCLI.CLI;
 using TagsCloudContainerCore;
+using TagsCloudContainerCore.Facade;
 
 namespace TagsCloudContainerCLI;
 
@@ -29,8 +30,10 @@ internal class Program
                     .WriteTo.Console()
                     .WriteTo.File("logs/log-.log", rollingInterval: RollingInterval.Day));
 
-                CoreStartUp.RegisterServices(builder);
-
+                builder.RegisterType<TagCloudFactory>()
+                    .As<ITagCloudFactory>()
+                    .InstancePerLifetimeScope();
+                builder.RegisterType<FileMode>().AsSelf();
                 builder.RegisterType<Demo>().AsSelf().SingleInstance();
             })
             .Build();
@@ -49,6 +52,14 @@ internal class Program
                     {
                         var demo = scope.ServiceProvider.GetRequiredService<Demo>();
                         demo.GenerateDemo();
+                    }
+                    else
+                    {
+                        var fileMode = scope.ServiceProvider.GetRequiredService<FileMode>();
+                        fileMode.Generate(
+                            "TEST TEXT REMOVE LATER TEXT TEXT",
+                            "results/cloud.png"
+                        );
                     }
                 })
                 .WithNotParsed(cliHandler.HandleParseError);

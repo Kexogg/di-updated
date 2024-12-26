@@ -1,8 +1,10 @@
+using TagsCloudContainerCore.Facade;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
 using TagsCloudContainerCore.Models;
 using TagsCloudContainerCore.Models.Graphics;
 using TagsCloudContainerCore.Renderer;
+using TagsCloudContainerCore.TextProcessor;
 
 namespace TagsCloudContainerCLI;
 
@@ -61,6 +63,6 @@ public class Demo
         var image = _renderer.DrawTags(tags);
         var encodedImage = _encoder.Encode(image);
         using var stream = File.OpenWrite(path);
-        encodedImage.SaveTo(stream);
+        stream.Write(encodedImage);
     }
 }

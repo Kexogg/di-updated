@@ -4,8 +4,8 @@ namespace TagsCloudContainerCore.ImageEncoders;
 
 public class PngEncoder : IImageEncoder
 {
-    public SKData Encode(SKImage image)
+    public byte[] Encode(SKImage image)
     {
-        return image.Encode(SKEncodedImageFormat.Png, 100);
+        return image.Encode(SKEncodedImageFormat.Png, 100).ToArray();
     }
 }

@@ -25,7 +25,19 @@ public class MyStemWordProcessor : IWordProcessor
         var weightedWords = new Dictionary<string, double>();
         foreach (var word in words)
         {
-            var processedWord = _myStemWrapper.ProcessWord(word.ToLower());
+            if (word.Any(char.IsDigit)) continue;
+            var wordChars = word.ToCharArray();
+            for (var i = 0; i < wordChars.Length; i++)
+            {
+                if (!char.IsLetter(wordChars[i]))
+                {
+                    wordChars[i] = ' ';
+                }
+                wordChars[i] = char.ToLower(wordChars[i]);
+            }
+            var wordWithoutSpecialChars = new string(wordChars);
+            if (string.IsNullOrWhiteSpace(wordWithoutSpecialChars)) continue;
+            var processedWord = _myStemWrapper.ProcessWord(wordWithoutSpecialChars);
             if (options.ExcludedPartsOfSpeech.Contains(processedWord.PartOfSpeech) ||
                 options.ExcludedWords.Contains(processedWord.NormalForm)) continue;
             if (!weightedWords.TryGetValue(processedWord.NormalForm, out var value))
@@ -39,7 +51,7 @@ public class MyStemWordProcessor : IWordProcessor
         }
 
         _logger.LogInformation("Finished processing text. Got {n} weighted words, excluded {e}", weightedWords.Count,
-            words.Length - weightedWords.Count);
+            words.Distinct().Count() - weightedWords.Count);
         return weightedWords;
     }
 }

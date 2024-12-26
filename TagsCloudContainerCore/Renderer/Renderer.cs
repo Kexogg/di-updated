@@ -47,7 +47,7 @@ public class Renderer : IRenderer
         return SKImage.FromBitmap(bitmap);
     }
 
-    private static Rectangle CalculateImageSize(IEnumerable<Tag> tags)
+    private Rectangle CalculateImageSize(IEnumerable<Tag> tags)
     {
         var endY = 0;
         var endX = 0;
@@ -60,6 +60,7 @@ public class Renderer : IRenderer
             startX = Math.Min(startX, (int)tag.BBox.Left);
             startY = Math.Min(startY, (int)tag.BBox.Top);
         }
+        _logger.LogInformation("Calculated image size: {x}x{y}", endX - startX, endY - startY);
         return new Rectangle(startX, startY, endX, endY);
     }
 

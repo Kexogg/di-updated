@@ -68,7 +68,7 @@ public class MyStemWrapper : IDisposable
 
         if (metadata.Length == 0 || !metadata[0].Contains('='))
         {
-            return new MyStemProcessedWord(raw, PartOfSpeech.S);
+            return new MyStemProcessedWord(raw[..(startIndex - 1)], PartOfSpeech.S);
         }
 
         var rootForm = metadata[0].Split('=')[0];
