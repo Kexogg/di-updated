@@ -9,7 +9,7 @@ using TagsCloudContainerCore.TextProcessor;
 
 namespace TagsCloudContainerCore.Facade;
 
-public class TagCloud
+public class TagCloud : ITagCloud
 {
     private readonly IWordProcessor _wordProcessor;
     private readonly ILayouterFactory _layouterFactory;

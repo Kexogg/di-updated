@@ -11,7 +11,7 @@ public class TagCloudFactory : ITagCloudFactory
         _scope = scope;
     }
 
-    public TagCloud Create(Action<TagCloudBuilder> configure)
+    public ITagCloud Create(Action<TagCloudBuilder> configure)
     {
         var builder = new TagCloudBuilder();
         configure(builder);
@@ -20,6 +20,6 @@ public class TagCloudFactory : ITagCloudFactory
 
         var childScope = _scope.BeginLifetimeScope(cb => { cb.RegisterModule(new TagCloudModule(options)); });
 
-        return childScope.Resolve<TagCloud>();
+        return childScope.Resolve<ITagCloud>();
     }
 }

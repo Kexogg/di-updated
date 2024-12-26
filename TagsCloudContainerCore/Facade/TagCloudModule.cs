@@ -19,7 +19,7 @@ public class TagCloudModule : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<TagCloud>().AsSelf().InstancePerLifetimeScope();
+        builder.RegisterType<TagCloud>().As<ITagCloud>().InstancePerLifetimeScope();
         
         builder.RegisterType(_options.DataProviderType).As<IDataProvider>().SingleInstance();
         builder.RegisterType(_options.WordProcessorType).As<IWordProcessor>().SingleInstance();
