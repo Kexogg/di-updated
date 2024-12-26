@@ -14,9 +14,9 @@ public class FileDataProvider : IDataProvider
 
     public string GetData(byte[] data)
     {
-        _logger.LogInformation("Start reading data");
+        _logger.LogInformation("Reading data with FileDataProvider");
         var text = Encoding.UTF8.GetString(data);
-        _logger.LogInformation("Read {n} bytes from file", data.Length);
+        _logger.LogInformation("Read {n} characters from file", data.Length);
         return text;
     }
 }

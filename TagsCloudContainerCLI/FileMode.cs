@@ -25,12 +25,15 @@ public class FileMode
         _config = config;
     }
 
+    
+    
     public void Generate(string filePath, string outputPath)
     {
         _logger.LogInformation("Generating tag cloud to {Path}", outputPath);
 
+        
         var tagCloud = _cloudFactory.Create(builder => builder
-            .UseDataProvider<OpenXmlProvider>()
+            .GuessDataProvider(Path.GetExtension(filePath))
             .UseWordProcessor<MyStemTextProcessor>(p =>
             {
                 p.ExcludedWords = _config.ExcludedWords;
@@ -69,5 +72,18 @@ public class FileMode
         var fullpath = Path.GetFullPath(outputPath);
         _logger.LogInformation("Saving tag cloud to {Path}", fullpath);
         File.WriteAllBytes(outputPath, imageBytes);
+    }
+}
+
+public static class BuilderExtensions
+{
+    public static TagCloudBuilder GuessDataProvider(this TagCloudBuilder b, string ext)
+    {
+        return ext switch
+        {
+            ".docx" => b.UseDataProvider<OpenXmlProvider>(),
+            ".txt" => b.UseDataProvider<FileDataProvider>(),
+            _ => b.UseDataProvider<FileDataProvider>(),
+        };
     }
 }
