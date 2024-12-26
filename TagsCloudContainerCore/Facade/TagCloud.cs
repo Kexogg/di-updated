@@ -1,3 +1,5 @@
+using System.Text;
+using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
 using TagsCloudContainerCore.Models;
@@ -13,23 +15,43 @@ public class TagCloud
     private readonly ILayouterFactory _layouterFactory;
     private readonly IRenderer _renderer;
     private readonly IImageEncoder _imageEncoder;
+    private readonly IDataProvider _dataProvider;
 
     public TagCloud(
         IWordProcessor wordProcessor,
         ILayouterFactory layouterFactory, 
         IRenderer renderer,
-        IImageEncoder imageEncoder)
+        IImageEncoder imageEncoder, 
+        IDataProvider dataProvider)
     {
         _wordProcessor = wordProcessor;
         _layouterFactory = layouterFactory;
         _renderer = renderer;
         _imageEncoder = imageEncoder;
+        _dataProvider = dataProvider;
     }
 
-    public byte[] From(string words)
+    public byte[] FromFile(string filePath)
+    {
+        var data = _dataProvider.GetData(File.ReadAllBytes(filePath));
+        return ProcessString(data);
+    }
+    
+    public byte[] FromString(string data)
+    {
+        return ProcessString(data);
+    }
+    
+    public byte[] FromBytes(byte[] data)
+    {
+        var text = Encoding.UTF8.GetString(data);
+        return ProcessString(text);
+    }
+    
+    private byte[] ProcessString(string data)
     {
         var layouter = _layouterFactory.Create();
-        var processedWords = _wordProcessor.ProcessText(words, new WordProcessorOptions([], []));
+        var processedWords = _wordProcessor.ProcessText(data, new WordProcessorOptions([], []));
         var tags = processedWords.Select(word => new Tag
         {
             Text = word.Key,

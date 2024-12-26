@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.Facade;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
@@ -19,18 +20,19 @@ public class FileMode
         _cloudFactory = cloudFactory;
     }
 
-    public void Generate(string text, string outputPath)
+    public void Generate(string filePath, string outputPath)
     {
         _logger.LogInformation("Generating tag cloud to {Path}", outputPath);
-        
+
         var tagCloud = _cloudFactory.Create(builder => builder
-            .UseLayouter<CircularCloudLayouter>()
+            .UseDataProvider<OpenXmlProvider>()
+            .UseLayouter<CircularClouldLayouterFactory>()
             .UseWordProcessor<MyStemWordProcessor>()
             .UseRenderer<Renderer>()
             .UseImageEncoder<PngEncoder>());
 
-        var imageBytes = tagCloud.From(text);
-        
+        var imageBytes = tagCloud.FromFile(filePath);
+
         Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
         File.WriteAllBytes(outputPath, imageBytes);
         _logger.LogInformation("Tag cloud generated successfully");

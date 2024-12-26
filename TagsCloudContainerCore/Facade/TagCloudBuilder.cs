@@ -1,3 +1,4 @@
+using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
 using TagsCloudContainerCore.Renderer;
@@ -9,7 +10,13 @@ public class TagCloudBuilder
 {
     private readonly TagCloudOptions _options = new();
 
-    public TagCloudBuilder UseLayouter<T>() where T : ILayouter
+    public TagCloudBuilder UseDataProvider<T>() where T : IDataProvider
+    {
+        _options.DataProviderType = typeof(T);
+        return this;
+    }
+    
+    public TagCloudBuilder UseLayouter<T>() where T : ILayouterFactory
     {
         _options.LayouterType = typeof(T);
         return this;

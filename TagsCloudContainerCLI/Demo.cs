@@ -1,8 +1,9 @@
+using System.Text;
+using Microsoft.Extensions.Logging;
+using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.Facade;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
-using TagsCloudContainerCore.Models;
-using TagsCloudContainerCore.Models.Graphics;
 using TagsCloudContainerCore.Renderer;
 using TagsCloudContainerCore.TextProcessor;
 
@@ -10,59 +11,53 @@ namespace TagsCloudContainerCLI;
 
 public class Demo
 {
-    private readonly IImageEncoder _encoder;
-    private readonly ILayouterFactory _layouterFactory;
-    private readonly IRenderer _renderer;
+    private ITagCloudFactory _cloudFactory;
 
-    public Demo(IImageEncoder encoder, ILayouterFactory layouterFactory, IRenderer renderer)
+    public Demo(ITagCloudFactory cloudFactory)
     {
-        _layouterFactory = layouterFactory;
-        _renderer = renderer;
-        _encoder = encoder;
+        _cloudFactory = cloudFactory;
     }
 
     public void GenerateDemo()
     {
         Directory.CreateDirectory("results");
 
-        RenderCloud(GenerateRandomCloud(10), "results/cloud_10.png");
-        RenderCloud(GenerateRandomCloud(50), "results/cloud_50.png");
-        RenderCloud(GenerateRandomCloud(100), "results/cloud_100.png");
+        GenerateRandomCloud(10);
+        GenerateRandomCloud(50);
+        GenerateRandomCloud(100);
     }
 
-    private Tag[] GenerateRandomCloud(int count)
+    private void GenerateRandomCloud(int count)
     {
-        var layouter = _layouterFactory.Create();
-        var tags = new Tag[count];
 
+        var tagCloud = _cloudFactory.Create(builder => builder
+            .UseDataProvider<OpenXmlProvider>()
+            .UseLayouter<CircularClouldLayouterFactory>()
+            .UseWordProcessor<MyStemWordProcessor>()
+            .UseRenderer<Renderer>()
+            .UseImageEncoder<PngEncoder>());
 
+        var imageBytes = tagCloud.FromString(GenerateRandomString(count));
+        
+        File.WriteAllBytes($"results/random_cloud_{count}", imageBytes);
+    }
+
+    private static string GenerateRandomString(int count)
+    {
+        var random = new Random();
+        var sb = new StringBuilder();
         for (var i = 0; i < count; i++)
         {
-            var fontSize = new Random().Next(10, 50);
-            var font = new Font();
-            font.Size = fontSize;
-            var text = $"Tag{i}";
-            var textWidth = font.MeasureText(text);
-
-            var tag = new Tag
+            for (var j = 0; j < random.Next(1, 10); j++)
             {
-                Text = text,
-                FontSize = fontSize,
-                Color = new Color((byte)new Random().Next(0, 255), (byte)new Random().Next(0, 255),
-                    (byte)new Random().Next(0, 255)),
-                BBox = layouter.PutNextRectangle(new Size(textWidth, fontSize))
-            };
-            tags[i] = tag;
+                sb.Append((char) random.Next('а', 'я'));
+            }
+            sb.Append(' ');
         }
 
-        return tags;
+        return sb.ToString();
     }
-
-    private void RenderCloud(Tag[] tags, string path)
-    {
-        var image = _renderer.DrawTags(tags);
-        var encodedImage = _encoder.Encode(image);
-        using var stream = File.OpenWrite(path);
-        stream.Write(encodedImage);
-    }
+    
+    
+    
 }

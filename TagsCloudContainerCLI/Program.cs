@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Extensions.Autofac.DependencyInjection;
 using TagsCloudContainerCLI.CLI;
-using TagsCloudContainerCore;
 using TagsCloudContainerCore.Facade;
 
 namespace TagsCloudContainerCLI;
@@ -57,7 +56,7 @@ internal class Program
                     {
                         var fileMode = scope.ServiceProvider.GetRequiredService<FileMode>();
                         fileMode.Generate(
-                            "TEST TEXT REMOVE LATER TEXT TEXT",
+                            "testFile.docx",
                             "results/cloud.png"
                         );
                     }

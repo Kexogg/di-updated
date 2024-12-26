@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace TagsCloudContainerCore.DataProvider;
@@ -11,11 +12,11 @@ public class FileDataProvider : IDataProvider
         _logger = logger;
     }
 
-    public IEnumerable<string> GetData(string filePath)
+    public string GetData(byte[] data)
     {
-        _logger.LogInformation("Opening file {file}", filePath);
-        using var reader = new StreamReader(filePath);
-        while (!reader.EndOfStream) yield return reader.ReadLine();
-        _logger.LogInformation("Finished reading file");
+        _logger.LogInformation("Start reading data");
+        var text = Encoding.UTF8.GetString(data);
+        _logger.LogInformation("Read {n} bytes from file", data.Length);
+        return text;
     }
 }
