@@ -4,41 +4,39 @@ namespace TagsCloudContainerCLI.CLI;
 
 public class CliOptions
 {
-    private static readonly TagCloudConfig DefaultConfig = new TagCloudConfig();
-
     [Option('d', "demo", Required = false, HelpText = "Run the application in demo mode.")]
     public bool Demo { get; set; }
 
     [Option('f', "file", Required = false, HelpText = "Specify the file path.")]
     public string File { get; set; }
-    
+
     [Option('o', "output", Required = false, HelpText = "Specify the output path.")]
     public string? Output { get; set; }
 
-    [Option("font", Required = false, HelpText = "Specify the font family.")]
-    public string FontFamily { get; set; } = DefaultConfig.FontFamily;
+    [Option("font", Required = false, Default = "Arial", HelpText = "Specify the font family.")]
+    public string FontFamily { get; set; }
 
-    [Option("scale", Required = false, HelpText = "Specify the render scale.")]
-    public float RenderScale { get; set; } = DefaultConfig.RenderScale;
+    [Option("scale", Required = false, Default = 1, HelpText = "Specify the render scale.")]
+    public float RenderScale { get; set; }
 
-    [Option("max-words", Required = false, HelpText = "Maximum number of words to include.")]
-    public int MaxWords { get; set; } = DefaultConfig.MaxWords;
+    [Option("max-words", Required = false, Default = 100, HelpText = "Maximum number of words to include.")]
+    public int MaxWords { get; set; }
 
-    [Option("min-font", Required = false, HelpText = "Minimum font size.")]
-    public float MinFontSize { get; set; } = DefaultConfig.MinFontSize;
+    [Option("min-font", Required = false, Default = 12f, HelpText = "Minimum font size.")]
+    public float MinFontSize { get; set; }
 
-    [Option("max-font", Required = false, HelpText = "Maximum font size.")]
-    public float MaxFontSize { get; set; } = DefaultConfig.MaxFontSize;
+    [Option("max-font", Required = false, Default = 48f, HelpText = "Maximum font size.")]
+    public float MaxFontSize { get; set; }
 
-    [Option("spacing", Required = false, HelpText = "Space between words.")]
-    public float LayoutSpacing { get; set; } = DefaultConfig.LayoutSpacing;
-    
-    [Option("radius", Required = false, HelpText = "Initial radius from center.")]
-    public double InitialRadius { get; set; } = DefaultConfig.InitialRadius;
+    [Option("spacing", Required = false, Default = 0.1f, HelpText = "Space between words.")]
+    public float LayoutSpacing { get; set; }
 
-    [Option("excluded-words", Required = false, HelpText = "Words to exclude.")]
-    public string ExcludedWords { get; set; } = string.Join(",", DefaultConfig.ExcludedWords);
+    [Option("radius", Required = false, Default = 0, HelpText = "Initial radius from center.")]
+    public double InitialRadius { get; set; }
 
-    [Option("excluded-parts", Required = false, HelpText = "Parts of speech to exclude.")]
-    public string ExcludedPartsOfSpeech { get; set; } = string.Join(",", DefaultConfig.ExcludedPartsOfSpeech);}
-    
+    [Option("excluded-words", Required = false, Default = "", HelpText = "Words to exclude.")]
+    public string ExcludedWords { get; set; }
+
+    [Option("excluded-parts", Required = false, Default = "PART,ADV,PR,CONJ,ANUM,APRO,SPRO,NUM", HelpText = "Parts of speech to exclude.")]
+    public string ExcludedPartsOfSpeech { get; set; }
+}

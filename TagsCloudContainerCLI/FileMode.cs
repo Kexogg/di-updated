@@ -36,6 +36,7 @@ public class FileMode
             .GuessDataProvider(Path.GetExtension(filePath))
             .UseWordProcessor<MyStemTextProcessor>(p =>
             {
+                p.MaxWordsCount = _config.MaxWords;
                 p.ExcludedWords = _config.ExcludedWords;
                 p.ExcludedPartsOfSpeech = _config.ExcludedPartsOfSpeech
                     .Select(pos =>
