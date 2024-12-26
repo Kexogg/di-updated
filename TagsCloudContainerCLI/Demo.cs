@@ -35,7 +35,7 @@ public class Demo
                 p.ExcludedWords = ["тест"];
                 p.ExcludedPartsOfSpeech = [];
             })
-            .UseLayouter<CircularCloudLayouterFactory>(p => { p.SpiralStep = 0.5; })
+            .UseLayouter<CircularCloudLayouterFactory>(p => { p.SpiralStep = 0.5; p.InitialRadius = 100; })
             .UseRenderer<Renderer>(r =>
             {
                 r.BackgroundColor = new Color(200, 200, 255);

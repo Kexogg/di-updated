@@ -57,6 +57,7 @@ public class FileMode
                 p.MaxFontSize = _config.MaxFontSize;
                 p.MinFontSize = _config.MinFontSize;
                 p.SpiralStep = _config.LayoutSpacing;
+                p.InitialRadius = _config.InitialRadius;
                 p.Font = new Font(_config.FontFamily);
             })
             .UseRenderer<Renderer>(r => r.TagFont = new Font(_config.FontFamily))

@@ -7,7 +7,7 @@ namespace TagsCloudContainerCore.TextProcessor.MyStem;
 public class MyStemWrapper : IDisposable
 {
     private string PathToBinary { get; set; } = 
-        Environment.OSVersion.Platform == PlatformID.Win32NT ? "mystem.exe" : "mystem";
+        Environment.OSVersion.Platform == PlatformID.Win32NT ? "Mystem/mystem.exe" : "Mystem/mystem";
     private Process _process;
     private StreamWriter _inputWriter;
     private StreamReader _outputReader;

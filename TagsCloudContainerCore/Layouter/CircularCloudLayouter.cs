@@ -12,12 +12,13 @@ public class CircularCloudLayouter : ILayouter
     private readonly float _minFontSize;
     private readonly Font _font;
 
-    public CircularCloudLayouter(double spiralStep, Font font, float minFontSize, float maxFontSize)
+    public CircularCloudLayouter(double spiralStep, Font font, float minFontSize, float maxFontSize, double angle)
     {
         _step = spiralStep;
         _font = font;
         _minFontSize = minFontSize;
         _maxFontSize = maxFontSize;
+        _angle = angle;
     }
 
     public Tag[] LayoutTags(Dictionary<string, double> words)

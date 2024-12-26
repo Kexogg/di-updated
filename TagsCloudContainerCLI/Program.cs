@@ -50,6 +50,7 @@ internal class Program
                         MinFontSize = options.MinFontSize,
                         MaxFontSize = options.MaxFontSize,
                         LayoutSpacing = options.LayoutSpacing,
+                        InitialRadius = options.InitialRadius,
                         ExcludedWords = options.ExcludedWords.Split(","),
                         ExcludedPartsOfSpeech = options.ExcludedPartsOfSpeech.Split(",")
                     };

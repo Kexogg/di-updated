@@ -32,6 +32,9 @@ public class CliOptions
 
     [Option("spacing", Required = false, HelpText = "Space between words.")]
     public float LayoutSpacing { get; set; } = DefaultConfig.LayoutSpacing;
+    
+    [Option("radius", Required = false, HelpText = "Initial radius from center.")]
+    public double InitialRadius { get; set; } = DefaultConfig.InitialRadius;
 
     [Option("excluded-words", Required = false, HelpText = "Words to exclude.")]
     public string ExcludedWords { get; set; } = string.Join(",", DefaultConfig.ExcludedWords);
