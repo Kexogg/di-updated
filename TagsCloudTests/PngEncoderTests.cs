@@ -49,6 +49,6 @@ public class PngEncoderTests
     [TearDown]
     public void Cleanup()
     {
-        _testImage?.Dispose();
+        _testImage.Dispose();
     }
 }
