@@ -31,7 +31,7 @@ public class FileMode
     {
         _logger.LogInformation("Generating tag cloud to {Path}", outputPath);
 
-        
+
         var tagCloud = _cloudFactory.Create(builder => builder
             .GuessDataProvider(Path.GetExtension(filePath))
             .UseWordProcessor<MyStemTextProcessor>(p =>
@@ -60,7 +60,7 @@ public class FileMode
                 p.Font = new Font(_config.FontFamily);
             })
             .UseRenderer<Renderer>(r => r.TagFont = new Font(_config.FontFamily))
-            .UseImageEncoder<PngEncoder>());
+            .GuessEncoder(Path.GetExtension(outputPath)));
 
         var imageBytes = tagCloud.FromFile(filePath);
 
@@ -81,9 +81,23 @@ public static class BuilderExtensions
     {
         return ext switch
         {
-            ".docx" => b.UseDataProvider<OpenXmlProvider>(),
+            ".docx" => b.UseDataProvider<OpenXmlDocumentsProvider>(),
+            ".doc" => b.UseDataProvider<OpenXmlDocumentsProvider>(),
+            ".ppt" => b.UseDataProvider<OpenXmlSlidesProvider>(),
+            ".pptx" => b.UseDataProvider<OpenXmlSlidesProvider>(),
             ".txt" => b.UseDataProvider<FileDataProvider>(),
             _ => b.UseDataProvider<FileDataProvider>(),
+        };
+    }
+    
+    public static TagCloudBuilder GuessEncoder(this TagCloudBuilder b, string ext)
+    {
+        return ext switch
+        {
+            ".png" => b.UseImageEncoder<PngEncoder>(),
+            ".jpeg" => b.UseImageEncoder<JpegEncoder>(),
+            ".jpg" => b.UseImageEncoder<JpegEncoder>(),
+            _ => b.UseImageEncoder<PngEncoder>(),
         };
     }
 }

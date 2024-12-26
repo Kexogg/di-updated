@@ -30,7 +30,7 @@ public class Demo
     private void GenerateRandomCloud(int count)
     {
         var tagCloud = _cloudFactory.Create(builder => builder
-            .UseDataProvider<OpenXmlProvider>()
+            .UseDataProvider<FileDataProvider>()
             .UseWordProcessor<MyStemTextProcessor>(p =>
             {
                 p.ExcludedWords = ["тест"];
