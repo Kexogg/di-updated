@@ -7,11 +7,13 @@ namespace TagsCloudContainerCore.Renderer;
 
 public class Renderer : IRenderer
 {
-    private readonly SKFont _font;
     private readonly ILogger<IRenderer> _logger;
     private readonly SKPaint _paint;
     public Color BackgroundColor { get; set; } = new(255, 255, 255);
     public Color TextColor { get; set; } = new(0, 0, 0);
+    
+    public Font TagFont { get; set; } = new("Arial", 12);
+    
     private float _renderingScale = 1;
 
     public float RenderingScale
@@ -33,7 +35,6 @@ public class Renderer : IRenderer
     public Renderer(ILogger<IRenderer> logger)
     {
         _logger = logger;
-        _font = SKTypeface.Default.ToFont();
         _paint = new SKPaint();
     }
 
@@ -52,12 +53,12 @@ public class Renderer : IRenderer
         foreach (var tag in tagList)
         {
             ValidateRectangle(tag.BBox);
-            _font.Size = tag.FontSize * RenderingScale;
+            TagFont.Size = tag.FontSize * RenderingScale;
 
             var x = tag.BBox.Left * RenderingScale;
-            var y = tag.BBox.Bottom * RenderingScale - _font.Metrics.Descent;
+            var y = tag.BBox.Bottom * RenderingScale - TagFont.Metrics.Descent;
 
-            canvas.DrawText(tag.Text, x, y, _font, _paint);
+            canvas.DrawText(tag.Text, x, y, TagFont, _paint);
         }
 
         _logger.LogInformation("Finished drawing tags");

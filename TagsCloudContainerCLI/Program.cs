@@ -34,6 +34,26 @@ internal class Program
                     .InstancePerLifetimeScope();
                 builder.RegisterType<FileMode>().AsSelf();
                 builder.RegisterType<Demo>().AsSelf().SingleInstance();
+                
+                
+                builder.Register(_ => Parser.Default.ParseArguments<CliOptions>(args).Value)
+                    .SingleInstance();
+                
+                builder.Register(c =>
+                {
+                    var options = c.Resolve<CliOptions>();
+                    return new TagCloudConfig
+                    {
+                        FontFamily = options.FontFamily,
+                        RenderScale = options.RenderScale, 
+                        MaxWords = options.MaxWords,
+                        MinFontSize = options.MinFontSize,
+                        MaxFontSize = options.MaxFontSize,
+                        LayoutSpacing = options.LayoutSpacing,
+                        ExcludedWords = options.ExcludedWords.Split(","),
+                        ExcludedPartsOfSpeech = options.ExcludedPartsOfSpeech.Split(",")
+                    };
+                }).SingleInstance();
             })
             .Build();
 
@@ -55,9 +75,14 @@ internal class Program
                     else
                     {
                         var fileMode = scope.ServiceProvider.GetRequiredService<FileMode>();
+                        if (string.IsNullOrEmpty(opts.File))
+                        {
+                            throw new ArgumentException("File path is required.");
+                        }
+                        var outputPath = opts.Output ?? $"{opts.File}.png";
                         fileMode.Generate(
-                            "testFile.docx",
-                            "results/cloud.png"
+                            opts.File,
+                            outputPath
                         );
                     }
                 })

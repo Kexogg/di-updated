@@ -11,20 +11,20 @@ namespace TagsCloudContainerCore.Facade;
 
 public class TagCloud : ITagCloud
 {
-    private readonly IWordProcessor _wordProcessor;
+    private readonly ITextProcessor _textProcessor;
     private readonly ILayouterFactory _layouterFactory;
     private readonly IRenderer _renderer;
     private readonly IImageEncoder _imageEncoder;
     private readonly IDataProvider _dataProvider;
 
     public TagCloud(
-        IWordProcessor wordProcessor,
+        ITextProcessor textProcessor,
         ILayouterFactory layouterFactory, 
         IRenderer renderer,
         IImageEncoder imageEncoder, 
         IDataProvider dataProvider)
     {
-        _wordProcessor = wordProcessor;
+        _textProcessor = textProcessor;
         _layouterFactory = layouterFactory;
         _renderer = renderer;
         _imageEncoder = imageEncoder;
@@ -51,15 +51,8 @@ public class TagCloud : ITagCloud
     private byte[] ProcessString(string data)
     {
         var layouter = _layouterFactory.Create();
-        var processedWords = _wordProcessor.ProcessText(data);
-        var tags = processedWords.Select(word => new Tag
-        {
-            Text = word.Key,
-            FontSize = (float)word.Value * 100,
-            Color = new Color(0, 0, 0),
-            BBox = layouter.PutNextRectangle(new Size(MeasureText(word.Key, (float)word.Value * 100), (float)word.Value * 100))
-        }).ToArray();
-
+        var processedWords = _textProcessor.ProcessText(data);
+        var tags = layouter.LayoutTags(processedWords);
         var renderedCloud = _renderer.DrawTags(tags);
         return _imageEncoder.Encode(renderedCloud);
     }

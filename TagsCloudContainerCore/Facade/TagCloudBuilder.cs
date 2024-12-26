@@ -26,7 +26,7 @@ public class TagCloudBuilder
         return this;
     }
     
-    public TagCloudBuilder UseWordProcessor<T>(Action<T>? configure = null) where T : IWordProcessor
+    public TagCloudBuilder UseWordProcessor<T>(Action<T>? configure = null) where T : ITextProcessor
     {
         _options.WordProcessorType = typeof(T);
         if (configure != null)

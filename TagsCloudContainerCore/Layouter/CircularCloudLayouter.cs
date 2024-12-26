@@ -1,3 +1,4 @@
+using TagsCloudContainerCore.Models;
 using TagsCloudContainerCore.Models.Graphics;
 
 namespace TagsCloudContainerCore.Layouter;
@@ -7,15 +8,42 @@ public class CircularCloudLayouter : ILayouter
     private readonly double _step;
     private readonly List<Rectangle> _rectangles = new();
     private double _angle;
-    
+    private readonly float _maxFontSize;
+    private readonly float _minFontSize;
+    private readonly Font _font;
 
-    public CircularCloudLayouter(double step)
+    public CircularCloudLayouter(double spiralStep, Font font, float minFontSize, float maxFontSize)
     {
-        _step = step;
+        _step = spiralStep;
+        _font = font;
+        _minFontSize = minFontSize;
+        _maxFontSize = maxFontSize;
     }
-    
-    public Rectangle PutNextRectangle(Size rectangleSize)
+
+    public Tag[] LayoutTags(Dictionary<string, double> words)
     {
+        var minWeight = words.Values.Min();
+        var maxWeight = words.Values.Max();
+        
+        var tags = words.Select(word =>
+        {
+            var adjustedFontSize = GetAdjustedFontSize(word.Value, minWeight, maxWeight);
+            return PutNextTag(word, adjustedFontSize);
+        }).ToArray();
+        return tags;
+    }
+
+    private float GetAdjustedFontSize(double wordValue, double minWeight, double maxWeight)
+    {
+        var adjustedFontSize = (float)(_minFontSize + (_maxFontSize - _minFontSize) * (wordValue - minWeight) / (maxWeight - minWeight));
+        return adjustedFontSize;
+    }
+
+
+    private Tag PutNextTag(KeyValuePair<string, double> word, float adjustedFontSize)
+    {
+        _font.Size = adjustedFontSize;
+        var rectangleSize = new Size(_font.MeasureText(word.Key), adjustedFontSize);
         if (rectangleSize.Width <= 0 || rectangleSize.Height <= 0)
             throw new ArgumentException("Rectangle size must be positive", nameof(rectangleSize));
 
@@ -35,9 +63,15 @@ public class CircularCloudLayouter : ILayouter
         } while (_rectangles.Any(r => r.IntersectsWith(rectangle)));
 
         _rectangles.Add(rectangle);
-        return rectangle;
+        return new Tag
+        {
+            Text = word.Key,
+            FontSize = _font.Size,
+            Color = new Color(0, 0, 0),
+            BBox = rectangle
+        };
     }
-    
+
 
     public IReadOnlyList<Rectangle> Rectangles => _rectangles.AsReadOnly();
 

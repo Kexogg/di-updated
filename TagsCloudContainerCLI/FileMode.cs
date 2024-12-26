@@ -1,8 +1,11 @@
 using Microsoft.Extensions.Logging;
+using TagsCloudContainerCLI.CLI;
 using TagsCloudContainerCore.DataProvider;
 using TagsCloudContainerCore.Facade;
 using TagsCloudContainerCore.ImageEncoders;
 using TagsCloudContainerCore.Layouter;
+using TagsCloudContainerCore.Models;
+using TagsCloudContainerCore.Models.Graphics;
 using TagsCloudContainerCore.Renderer;
 using TagsCloudContainerCore.TextProcessor;
 
@@ -13,11 +16,13 @@ public class FileMode
 {
     private readonly ILogger<FileMode> _logger;
     private readonly ITagCloudFactory _cloudFactory;
+    private readonly TagCloudConfig _config;
 
-    public FileMode(ILogger<FileMode> logger, ITagCloudFactory cloudFactory)
+    public FileMode(ILogger<FileMode> logger, ITagCloudFactory cloudFactory, TagCloudConfig config)
     {
         _logger = logger;
         _cloudFactory = cloudFactory;
+        _config = config;
     }
 
     public void Generate(string filePath, string outputPath)
@@ -26,15 +31,43 @@ public class FileMode
 
         var tagCloud = _cloudFactory.Create(builder => builder
             .UseDataProvider<OpenXmlProvider>()
-            .UseLayouter<CircularCloudLayouterFactory>()
-            .UseWordProcessor<MyStemTextProcessor>()
-            .UseRenderer<Renderer>()
+            .UseWordProcessor<MyStemTextProcessor>(p =>
+            {
+                p.ExcludedWords = _config.ExcludedWords;
+                p.ExcludedPartsOfSpeech = _config.ExcludedPartsOfSpeech
+                    .Select(pos =>
+                    {
+                        if (Enum.TryParse<PartOfSpeech>(pos, true, out var parsedPos))
+                        {
+                            return parsedPos;
+                        }
+
+                        _logger.LogWarning("Invalid PartOfSpeech value: {Value}", pos);
+                        return (PartOfSpeech?)null;
+                    })
+                    .Where(pos => pos.HasValue)
+                    .Select(pos => pos!.Value)
+                    .ToArray();
+            })
+            .UseLayouter<CircularCloudLayouterFactory>(p =>
+            {
+                p.MaxFontSize = _config.MaxFontSize;
+                p.MinFontSize = _config.MinFontSize;
+                p.SpiralStep = _config.LayoutSpacing;
+                p.Font = new Font(_config.FontFamily);
+            })
+            .UseRenderer<Renderer>(r => r.TagFont = new Font(_config.FontFamily))
             .UseImageEncoder<PngEncoder>());
 
         var imageBytes = tagCloud.FromFile(filePath);
 
-        Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
+        var directory = Path.GetDirectoryName(outputPath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+        var fullpath = Path.GetFullPath(outputPath);
+        _logger.LogInformation("Saving tag cloud to {Path}", fullpath);
         File.WriteAllBytes(outputPath, imageBytes);
-        _logger.LogInformation("Tag cloud generated successfully");
     }
 }

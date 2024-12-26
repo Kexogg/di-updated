@@ -4,7 +4,7 @@ using TagsCloudContainerCore.TextProcessor.MyStem;
 
 namespace TagsCloudContainerCore.TextProcessor;
 
-public class MyStemTextProcessor : IWordProcessor
+public class MyStemTextProcessor : ITextProcessor
 {
     private ILogger<MyStemTextProcessor> _logger;
 
