@@ -30,15 +30,12 @@ public class Demo
     private void GenerateRandomCloud(int count)
     {
         var tagCloud = _cloudFactory.Create(builder => builder
-            .UseDataProvider<FileDataProvider>()
             .UseWordProcessor<MyStemTextProcessor>(p =>
             {
                 p.ExcludedWords = ["тест"];
+                p.ExcludedPartsOfSpeech = [];
             })
-            .UseLayouter<CircularCloudLayouterFactory>(p =>
-            {
-                p.SpiralStep = 1;
-            })
+            .UseLayouter<CircularCloudLayouterFactory>(p => { p.SpiralStep = 0.5; })
             .UseRenderer<Renderer>(r =>
             {
                 r.BackgroundColor = new Color(200, 200, 255);
@@ -54,15 +51,14 @@ public class Demo
 
     private static string GenerateRandomString(int count)
     {
+        var randomString =
+            "Lorem ipsum — классический текст-«рыба» (условный, зачастую бессмысленный текст-заполнитель, вставляемый в макет страницы, используемый для образца шрифта и текста, поля размещения на странице). "
+                .Split();
         var random = new Random();
         var sb = new StringBuilder();
         for (var i = 0; i < count; i++)
         {
-            for (var j = 0; j < random.Next(1, 10); j++)
-            {
-                sb.Append((char)random.Next('а', 'я'));
-            }
-
+            sb.Append(randomString[random.Next(randomString.Length)]);
             sb.Append(' ');
         }
 

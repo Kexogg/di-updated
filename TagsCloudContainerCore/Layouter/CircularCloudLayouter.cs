@@ -25,16 +25,17 @@ public class CircularCloudLayouter : ILayouter
         var minWeight = words.Values.Min();
         var maxWeight = words.Values.Max();
         
-        var tags = words.Select(word =>
+        return words.Select(word =>
         {
             var adjustedFontSize = GetAdjustedFontSize(word.Value, minWeight, maxWeight);
             return PutNextTag(word, adjustedFontSize);
         }).ToArray();
-        return tags;
     }
 
     private float GetAdjustedFontSize(double wordValue, double minWeight, double maxWeight)
     {
+        if (maxWeight == minWeight)
+            return _minFontSize;
         var adjustedFontSize = (float)(_minFontSize + (_maxFontSize - _minFontSize) * (wordValue - minWeight) / (maxWeight - minWeight));
         return adjustedFontSize;
     }

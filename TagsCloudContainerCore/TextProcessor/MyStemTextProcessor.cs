@@ -31,7 +31,7 @@ public class MyStemTextProcessor : ITextProcessor
         _logger.LogInformation("Start processing text");
         _myStemWrapper.StartProcess();
         var words = text.Split();
-        _logger.LogInformation("Got {n} words from MyStem", words.Length);
+        _logger.LogInformation("Got {n} words", words.Length);
         var weightedWords = new Dictionary<string, double>();
         foreach (var word in words)
         {
